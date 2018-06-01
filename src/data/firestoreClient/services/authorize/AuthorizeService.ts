@@ -1,4 +1,5 @@
 import { Profile } from 'core/domain/users'
+import { GeneratePrivateKey } from 'core/nem'
 
 // - Import react components
 import { firebaseRef, firebaseAuth, db } from 'data/firestoreClient'
@@ -222,7 +223,8 @@ export class AuthorizeService implements IAuthorizeService {
           avatar,
           fullName,
           creationDate: moment().unix(),
-          email
+          email,
+          privateKey: GeneratePrivateKey()
         }
       )
       .then(() => {

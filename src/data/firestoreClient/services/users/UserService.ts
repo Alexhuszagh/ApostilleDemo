@@ -4,6 +4,7 @@ import moment from 'moment/moment'
 
 import { SocialError } from 'core/domain/common'
 import { Profile, UserProvider } from 'core/domain/users'
+import { GeneratePrivateKey } from 'core/nem'
 import { IUserService } from 'core/services/users'
 import { injectable } from 'inversify'
 
@@ -32,8 +33,9 @@ export class UserService implements IUserService {
                 reject(reject(new SocialError(`firestore/providerdata`, 'firestore/getUserProfile : Provider data or email of provider data is empty!')))
               }
               const {avatar,fullName, email} = providerData
-              const userProfile = new Profile(avatar,fullName && fullName !== '' ? fullName : email ,'','',moment().unix(),email, -1, '', '', '')
+              const userProfile = new Profile(avatar, fullName && fullName !== '' ? fullName : email, '', '', moment().unix(), GeneratePrivateKey(), email, -1, '', '', '')
               resolve(userProfile)
+              // TODO: need to sink a faucet into the user profile.
               this.updateUserProfile(userId,userProfile)
             })
           } else {

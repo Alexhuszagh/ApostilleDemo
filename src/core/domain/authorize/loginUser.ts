@@ -44,7 +44,7 @@ export class LoginUser extends BaseDomain {
   }
 
   public get email (): string {
-    return this.email
+    return this._email
   }
 
   public get avatarURL (): string {

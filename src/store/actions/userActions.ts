@@ -38,6 +38,7 @@ export const dbGetUserInfo = () => {
           banner: userProfile.banner,
           tagLine: userProfile.tagLine,
           creationDate: userProfile.creationDate,
+          privateKey: userProfile.privateKey,
           birthday: userProfile.birthday,
           companyName: userProfile.companyName,
           webUrl: userProfile.webUrl,
@@ -72,6 +73,7 @@ export const dbGetUserInfoByUserId = (uid: string, callerKey: string) => {
           banner: userProfile.banner,
           tagLine: userProfile.tagLine,
           creationDate: userProfile.creationDate,
+          privateKey: userProfile.privateKey,
           birthday: userProfile.birthday,
           companyName: userProfile.companyName,
           webUrl: userProfile.webUrl,
@@ -113,7 +115,8 @@ export const dbUpdateUserInfo = (newProfile: Profile) => {
       companyName: newProfile.companyName || '',
       webUrl: newProfile.webUrl || '',
       twitterId: newProfile.twitterId || '',
-      creationDate: newProfile.creationDate
+      creationDate: newProfile.creationDate,
+      privateKey: newProfile.privateKey
     }
     return userService.updateUserProfile(uid,updatedProfile).then(() => {
 

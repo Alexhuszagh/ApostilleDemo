@@ -227,7 +227,11 @@ export class EditProfileComponent extends Component<IEditProfileComponentProps, 
       /**
        * User twitter id
        */
-      twitterId: (props.info && props.info.twitterId) ? props.info.twitterId : ''
+      twitterId: (props.info && props.info.twitterId) ? props.info.twitterId : '',
+      /**
+       * User private key.
+       */
+      privateKey:  (props.info && props.info.privateKey) ? props.info.privateKey : ''
 
     }
 
@@ -299,7 +303,7 @@ export class EditProfileComponent extends Component<IEditProfileComponentProps, 
    * @memberof EditProfile
    */
   handleUpdate = () => {
-    const { fullNameInput, tagLineInput, avatar, banner, selectedBirthday, companyName, webUrl, twitterId } = this.state
+    const { fullNameInput, tagLineInput, avatar, banner, selectedBirthday, companyName, webUrl, twitterId, privateKey } = this.state
     const { info, update } = this.props
 
     if (fullNameInput.trim() === '') {
@@ -320,7 +324,8 @@ export class EditProfileComponent extends Component<IEditProfileComponentProps, 
         webUrl: webUrl,
         twitterId: twitterId,
         creationDate: this.props.info!.creationDate,
-        birthday: selectedBirthday > 0 ? selectedBirthday : ((info && info.birthday) ? info!.birthday! : 0)
+        birthday: selectedBirthday > 0 ? selectedBirthday : ((info && info.birthday) ? info!.birthday! : 0),
+        privateKey: privateKey
       })
     }
   }

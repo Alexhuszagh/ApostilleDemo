@@ -1,0 +1,23 @@
+const nem = require('nem-sdk').default
+import { config } from './config'
+
+// Endpoint
+const endpoint = nem.model.objects.create('endpoint')(config.url, config.port)
+
+// Status
+export const Heartbeat = () =>
+    nem.com.requests.endpoint.heartbeat(endpoint)
+
+export const ChainHeight = () =>
+    nem.com.requests.chain.height(endpoint)
+
+export const LastBlock = () =>
+    nem.com.requests.chain.lastBlock(endpoint)
+
+export const Time = () =>
+    nem.com.requests.chain.time(endpoint)
+
+// Announce
+
+// export const SendXem = (amount: number) =>
+//    nem.com.requests

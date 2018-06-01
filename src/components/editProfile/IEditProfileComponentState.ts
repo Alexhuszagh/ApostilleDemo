@@ -90,4 +90,9 @@ export interface IEditProfileComponentState {
    */
   twitterId: string
 
+  /**
+   * User private key.
+   */
+  privateKey: string
+
 }
