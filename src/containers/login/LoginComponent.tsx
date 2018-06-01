@@ -154,15 +154,8 @@ export class LoginComponent extends Component<ILoginComponentProps, ILoginCompon
     const OAuthLogin = (
       <div style={this.styles.singinOptions as any}>
         <IconButton
-          onClick={() => loginWithOAuth!(OAuthType.FACEBOOK)}
-        ><div className='icon-fb icon'></div></IconButton>
-        <IconButton
           onClick={() => loginWithOAuth!(OAuthType.GOOGLE)}
         > <div className='icon-google icon'></div> </IconButton>
-        <IconButton
-          onClick={() => loginWithOAuth!(OAuthType.GITHUB)}
-        > <div className='icon-github icon'></div> </IconButton>
-  
       </div>
     )
 
@@ -184,7 +177,7 @@ export class LoginComponent extends Component<ILoginComponentProps, ILoginCompon
                     <h2 className='zoomOutLCorner animated g__paper-title'>{translate!('login.title')}</h2>
                   </div>
                   {config.settings.enabledOAuthLogin ? OAuthLogin : ''}
-                
+
                   <Divider style={this.styles.divider} />
                   <TextField
                     className={classes.textField}

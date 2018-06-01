@@ -120,6 +120,7 @@ export const dbDeleteComment = (id?: string | null, postId?: string) => {
     }
     dispatch(globalActions.showTopLoading())
 
+    // TODO: here....
     return commentService.deleteComment(id!)
       .then(() => {
         dispatch(deleteComment(id!, postId!))

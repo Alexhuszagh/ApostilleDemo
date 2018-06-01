@@ -52,4 +52,8 @@ export interface IPostComponentState {
    * Whether post menu open
    */
   isPostMenuOpen?: boolean
+  /**
+   * Whether the verified tooltip is open.
+   */
+  isVerifiedTooltipOpen?: boolean
 }

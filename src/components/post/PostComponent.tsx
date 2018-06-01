@@ -32,10 +32,12 @@ import MenuList from '@material-ui/core/MenuList'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
+import Icon from '@material-ui/core/Icon'
 import IconButton from '@material-ui/core/IconButton'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
+import Tooltip from '@material-ui/core/Tooltip'
 import { withStyles } from '@material-ui/core/styles'
 import { Manager, Target, Popper } from 'react-popper'
 import Grow from '@material-ui/core/Grow'
@@ -43,6 +45,10 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import classNames from 'classnames'
 
 import reactStringReplace from 'react-string-replace'
+
+// - Import app icons
+import SvgRejectedPost from 'icons/SvgRejectedPost'
+import SvgVerifiedPost from 'icons/SvgVerifiedPost'
 
 // - Import app components
 import CommentGroup from 'components/commentGroup'
@@ -61,6 +67,9 @@ import { IPostComponentProps } from './IPostComponentProps'
 import { IPostComponentState } from './IPostComponentState'
 
 const styles = (theme: any) => ({
+  icon: {
+    marginTop: 1
+  },
   iconButton: {
     width: 27,
     marginLeft: 5
@@ -174,7 +183,11 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
       /**
        * Whether post menu open
        */
-      isPostMenuOpen: false
+      isPostMenuOpen: false,
+      /**
+       * Whether the verified tooltip is open.
+       */
+      isVerifiedTooltipOpen: false
     }
 
     // Binding functions to this
@@ -188,6 +201,8 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
     this.handleOpenPostWrite = this.handleOpenPostWrite.bind(this)
     this.handleClosePostWrite = this.handleClosePostWrite.bind(this)
     this.handleOpenComments = this.handleOpenComments.bind(this)
+    this.handleVerifyTooltipOpen = this.handleVerifyTooltipOpen.bind(this)
+    this.handleVerifyTooltipClose = this.handleVerifyTooltipClose.bind(this)
   }
 
   /**
@@ -228,6 +243,26 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
     this.setState({
       openPostWrite: false
     })
+  }
+
+  /**
+   * Handle verification tooltip close.
+   *
+   *
+   * @memberof Post
+   */
+  handleVerifyTooltipClose = () => {
+    this.setState({ isVerifiedTooltipOpen: false })
+  }
+
+  /**
+   * Handle verification tooltip open.
+   *
+   *
+   * @memberof Post
+   */
+  handleVerifyTooltipOpen = () => {
+    this.setState({ isVerifiedTooltipOpen: true })
   }
 
   /**
@@ -345,16 +380,43 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
   render () {
     const { post, setHomeTitle, goTo, fullName, isPostOwner, commentList, avatar, classes , translate} = this.props
     const { postMenuAnchorEl, isPostMenuOpen } = this.state
+    const verified = false // TODO: fix
+    const postHash = 'fe4e545983d3eaae564957936211f489b82d9d26b1d201c84a7283d5c8a46e12633e108e3a9f7fd65e2d5c7584fbdf8f821a4d4aad0ee22007dbf6f361c7da7988d3f2990d'
     const rightIconMenu = (
       <Manager>
         <Target>
-          <IconButton
-            aria-owns={isPostMenuOpen! ? 'post-menu' : ''}
-            aria-haspopup='true'
-            onClick={this.openPostMenu.bind(this)}
-          >
-            <MoreVertIcon />
-          </IconButton>
+          <div>
+            <IconButton
+              aria-owns={isPostMenuOpen! ? 'post-menu' : ''}
+              aria-haspopup='true'
+              onClick={this.openPostMenu.bind(this)}
+            >
+              <MoreVertIcon />
+            </IconButton>
+            <Tooltip
+              enterDelay={300}
+              id='tooltip-controlled'
+              leaveDelay={300}
+              onClose={this.handleVerifyTooltipClose}
+              onOpen={this.handleVerifyTooltipOpen}
+              open={this.state.isVerifiedTooltipOpen}
+              placement='bottom'
+              title={postHash}
+            >
+              {verified ?
+                (<Icon
+                  className={classes.icon}
+                  aria-label='Verified'>
+                  <SvgVerifiedPost style={{ fill: '#00A6FF' }} />
+                </Icon>) :
+                (<Icon
+                  className={classes.icon}
+                  aria-label='Rejected'>
+                  <SvgRejectedPost style={{ fill: '#FF6977' }} />
+                </Icon>)
+              }
+            </Tooltip>
+          </div>
 
         </Target>
         <Popper
@@ -384,15 +446,15 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
       </Manager>
     )
 
-    const { 
-      ownerUserId, 
-      ownerDisplayName, 
-      creationDate, 
-      image, 
-      body, 
-      id, 
-      disableComments, 
-      commentCounter, 
+    const {
+      ownerUserId,
+      ownerDisplayName,
+      creationDate,
+      image,
+      body,
+      id,
+      disableComments,
+      commentCounter,
       disableSharing ,
     } = post.toJS()
     // Define variables
@@ -457,7 +519,7 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
           {!disableSharing ? (<IconButton
             className={classes.iconButton}
             onClick={this.handleOpenShare}
-            aria-label='Comment'>
+            aria-label='Share'>
             <SvgShare />
           </IconButton>) : ''}
 
@@ -465,15 +527,15 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
 
         <CommentGroup open={this.state.openComments} comments={commentList} ownerPostUserId={ownerUserId!} onToggleRequest={this.handleOpenComments} isPostOwner={this.props.isPostOwner!} disableComments={disableComments!} postId={id} />
 
-        <ShareDialog 
-        onClose={this.handleCloseShare} 
-        shareOpen={this.state.shareOpen} 
-        onCopyLink={this.handleCopyLink} 
+        <ShareDialog
+        onClose={this.handleCloseShare}
+        shareOpen={this.state.shareOpen}
+        onCopyLink={this.handleCopyLink}
         openCopyLink={this.state.openCopyLink}
-        post={post} 
+        post={post}
 
         />
-       
+
         <PostWrite
           open={this.state.openPostWrite}
           onRequestClose={this.handleClosePostWrite}
