@@ -380,7 +380,7 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
   render () {
     const { post, setHomeTitle, goTo, fullName, isPostOwner, commentList, avatar, classes , translate} = this.props
     const { postMenuAnchorEl, isPostMenuOpen } = this.state
-    const verified = false // TODO: fix
+    const verified = true // TODO: fix
     const postHash = 'fe4e545983d3eaae564957936211f489b82d9d26b1d201c84a7283d5c8a46e12633e108e3a9f7fd65e2d5c7584fbdf8f821a4d4aad0ee22007dbf6f361c7da7988d3f2990d'
     const rightIconMenu = (
       <Manager>
