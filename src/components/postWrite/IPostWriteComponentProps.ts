@@ -53,9 +53,19 @@ export interface IPostWriteComponentProps {
   ownerDisplayName?: string
 
   /**
+   * The post owner private key
+   */
+  ownerPrivateKey?: string
+
+  /**
    * Post model
    */
   postModel?: Map<string, any>
+
+  /**
+   * The transaction hash for the apostille of the post.
+   */
+  postTransactionHash?: string
 
   /**
    * Save a post

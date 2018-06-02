@@ -380,6 +380,7 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
   render () {
     const { post, setHomeTitle, goTo, fullName, isPostOwner, commentList, avatar, classes , translate} = this.props
     const { postMenuAnchorEl, isPostMenuOpen } = this.state
+    const verifiedLoaded = false // TODO: fix
     const verified = true // TODO: fix
     const postHash = 'fe4e545983d3eaae564957936211f489b82d9d26b1d201c84a7283d5c8a46e12633e108e3a9f7fd65e2d5c7584fbdf8f821a4d4aad0ee22007dbf6f361c7da7988d3f2990d'
     const rightIconMenu = (
@@ -393,29 +394,32 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
             >
               <MoreVertIcon />
             </IconButton>
-            <Tooltip
-              enterDelay={300}
-              id='tooltip-controlled'
-              leaveDelay={300}
-              onClose={this.handleVerifyTooltipClose}
-              onOpen={this.handleVerifyTooltipOpen}
-              open={this.state.isVerifiedTooltipOpen}
-              placement='bottom'
-              title={postHash}
-            >
-              {verified ?
-                (<Icon
-                  className={classes.icon}
-                  aria-label='Verified'>
-                  <SvgVerifiedPost style={{ fill: '#00A6FF' }} />
-                </Icon>) :
-                (<Icon
-                  className={classes.icon}
-                  aria-label='Rejected'>
-                  <SvgRejectedPost style={{ fill: '#FF6977' }} />
-                </Icon>)
-              }
-            </Tooltip>
+            {verifiedLoaded ?
+              <Tooltip
+                enterDelay={300}
+                id='tooltip-controlled'
+                leaveDelay={300}
+                onClose={this.handleVerifyTooltipClose}
+                onOpen={this.handleVerifyTooltipOpen}
+                open={this.state.isVerifiedTooltipOpen}
+                placement='bottom'
+                title={postHash}
+              >
+                {verified ?
+                  (<Icon
+                    className={classes.icon}
+                    aria-label='Verified'>
+                    <SvgVerifiedPost style={{ fill: '#00A6FF' }} />
+                  </Icon>) :
+                  (<Icon
+                    className={classes.icon}
+                    aria-label='Rejected'>
+                    <SvgRejectedPost style={{ fill: '#FF6977' }} />
+                  </Icon>)
+                }
+              </Tooltip>
+              : ''
+            }
           </div>
 
         </Target>

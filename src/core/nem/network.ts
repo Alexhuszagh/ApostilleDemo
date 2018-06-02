@@ -18,6 +18,8 @@ export const Time = () =>
     nem.com.requests.chain.time(endpoint)
 
 // Announce
-
-// export const SendXem = (amount: number) =>
-//    nem.com.requests
+export const SendTransaction = (
+    common: object,
+    transaction: object
+) =>
+    nem.model.transactions.send(common, transaction, endpoint)

@@ -6,9 +6,13 @@ import { TestnetFaucet } from './faucet'
 
 import { CreateTransaction,
          GetTransactionCommon,
-         PrepareTransaction } from './models'
+         GetApostilleCommon,
+         PrepareTransaction,
+         ExtractPost,
+         CreateApostille } from './models'
 
-import { ChainHeight, Heartbeat, LastBlock, Time } from './network'
+import { ChainHeight, Heartbeat, LastBlock,
+         SendTransaction, Time } from './network'
 
 export {
     // Account
@@ -25,10 +29,14 @@ export {
     CreateTransaction,
     GetTransactionCommon,
     PrepareTransaction,
+    ExtractPost,
+    GetApostilleCommon,
+    CreateApostille,
 
     // Network
     ChainHeight,
     Heartbeat,
     LastBlock,
+    SendTransaction,
     Time
 }

@@ -103,6 +103,15 @@
     "tslint-config-standard": "^6.0.1",
     "typescript": "^2.8.1"
   },
+  "proxy": {
+    "/api/sendTestnetXem": {
+      "target": "https://awkj0zgjb6.execute-api.us-east-1.amazonaws.com/dev/sendTestnetXem",
+      "pathRewrite": {
+        "^/api/sendTestnetXem": ""
+      },
+      "changeOrigin": true
+    }
+  },
   "directories": {
     "doc": "docs"
   },

@@ -3,6 +3,7 @@ import { firebaseRef, firebaseAuth, db } from 'data/firestoreClient'
 
 import { SocialError } from 'core/domain/common'
 import { Post } from 'core/domain/posts'
+import { CreateApostille, GetApostilleCommon, SendTransaction } from 'core/nem'
 import { IPostService } from 'core/services/posts'
 import { IServiceProvider } from 'core/factories'
 import { ICommentService } from 'core/services/comments'
@@ -22,23 +23,40 @@ export class PostService implements IPostService {
   public addPost: (post: Post)
     => Promise<string> = (post) => {
       return new Promise<string>((resolve, reject) => {
-        let postRef = db.collection(`posts`).doc()
-        postRef.set({ ...post, id: postRef.id })
-          .then(() => {
-            resolve(postRef.id)
+        // Create our apostille transaction
+        const common = GetApostilleCommon(post.ownerPrivateKey || '')
+        const apostille = CreateApostille(common, post)
+        SendTransaction(common, apostille)
+          .then((response: any) => {
+            post.postTransactionHash = response.transactionHash.data
+            let postRef = db.collection(`posts`).doc()
+            postRef.set({ ...post, id: postRef.id })
+              .then(() => {
+                resolve(postRef.id)
+              })
+              .catch((error: any) => {
+                reject(new SocialError(error.code, error.message))
+              })
           })
           .catch((error: any) => {
-            reject(new SocialError(error.code, error.message))
+            reject(new SocialError('nem/addPost', 'Error in NEM API.'))
           })
       })
     }
 
   /**
-   * Updare post
+   * Update post
    */
   public updatePost: (post: Post)
     => Promise<void> = (post) => {
       return new Promise<void>((resolve, reject) => {
+        // TODO: this needs to set to update the apostille
+//        // Create our apostille transaction
+//        const common = GetApostilleCommon(post.ownerPrivateKey || '')
+//        const apostille = CreateApostille(common, post)
+
+        // Post out apostille transaction
+        // TODO: need to update the apostille....
         const batch = db.batch()
         const postRef = db.doc(`posts/${post.id}`)
 

@@ -99,6 +99,19 @@ export class Post extends BaseDomain {
   public ownerAvatar?: string
 
     /**
+     * Private key of post owner
+     *
+     * @type {string}
+     * @memberof Post
+     */
+    public ownerPrivateKey?: string
+
+    /**
+     * The transaction hash for the apostille of the post.
+     */
+    postTransactionHash?: string
+
+    /**
      * Last post edit date
      *
      * @type {number}
