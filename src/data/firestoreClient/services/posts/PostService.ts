@@ -69,7 +69,7 @@ export class PostService implements IPostService {
               })
           })
           .catch((error: any) => {
-            reject(new SocialError('nem/addPost', 'Error in NEM API.'))
+            reject(new SocialError('nem/updatePost', 'Error in NEM API.'))
           })
       })
     }
