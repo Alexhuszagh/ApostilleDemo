@@ -422,7 +422,6 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
     const hash = this.props.post.get('postTransactionHash', '')
     const post = this.props.post.toJS()
     const content = ExtractPost(post)
-    console.log(`Hash is: ${hash} and content is ${content}`)
 
     TransactionByHash(hash)
       .then((response: any) => {
