@@ -1,5 +1,5 @@
 import { Profile } from 'core/domain/users'
-import { GeneratePrivateKey } from 'core/nem'
+import { AddressFromPrivateKey, GeneratePrivateKey, TestnetFaucet } from 'core/nem'
 
 // - Import react components
 import { firebaseRef, firebaseAuth, db } from 'data/firestoreClient'
@@ -216,22 +216,27 @@ export class AuthorizeService implements IAuthorizeService {
    */
   private storeUserInformation = (userId: string, email: string, fullName: string, avatar: string) => {
     return new Promise<RegisterUserResult>((resolve,reject) => {
-      db.doc(`userInfo/${userId}`).set(
-        {
-          id: userId,
-          state: 'active',
-          avatar,
-          fullName,
-          creationDate: moment().unix(),
-          email,
-          privateKey: GeneratePrivateKey()
-        }
-      )
-      .then(() => {
-        resolve(new RegisterUserResult(userId))
+      const privateKey = GeneratePrivateKey()
+      const address = AddressFromPrivateKey(privateKey)
+      TestnetFaucet(address)
+        .then((response: any) => {
+          db.doc(`userInfo/${userId}`)
+            .set({
+              id: userId,
+              state: 'active',
+              avatar,
+              fullName,
+              creationDate: moment().unix(),
+              email,
+              privateKey
+            })
+            .then(() => {
+              resolve(new RegisterUserResult(userId))
+            })
+            .catch((error: any) => reject(new SocialError(error.name,  'firestore/storeUserInformation : ' + error.message)))
+          })
+        .catch((error: any) => reject(new SocialError('nem/storeUserInformation', 'Error in NEM API.')))
       })
-      .catch((error: any) => reject(new SocialError(error.name, 'firestore/storeUserInformation : ' + error.message)))
-    })
   }
 
   /**

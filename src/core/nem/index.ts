@@ -2,6 +2,8 @@ import { AddressFromPublicKey, AddressFromPrivateKey,
          GeneratePrivateKey, KeyPairFromPrivateKey,
          PublicKeyFromPrivateKey } from './account'
 
+import { TestnetFaucet } from './faucet'
+
 import { CreateTransaction,
          GetTransactionCommon,
          PrepareTransaction } from './models'
@@ -15,6 +17,9 @@ export {
     GeneratePrivateKey,
     KeyPairFromPrivateKey,
     PublicKeyFromPrivateKey,
+
+    // Faucet
+    TestnetFaucet,
 
     // Models
     CreateTransaction,
