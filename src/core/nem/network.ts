@@ -2,7 +2,7 @@ const nem = require('nem-sdk').default
 import { config } from './config'
 
 // Endpoint
-const endpoint = nem.model.objects.create('endpoint')(config.url, config.port)
+const endpoint = nem.model.objects.create('endpoint')(config.url)
 
 // Status
 export const Heartbeat = () =>

@@ -41,7 +41,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "morgan": "^1.8.1",
-    "nem-sdk": "^1.6.6",
+    "nem-sdk": "git+https://github.com/Alexhuszagh/nem-sdk.git",
     "node-sass-chokidar": "0.0.3",
     "npm": "^5.6.0",
     "npm-run-all": "^4.1.2",
@@ -108,6 +108,13 @@
       "target": "https://awkj0zgjb6.execute-api.us-east-1.amazonaws.com/dev/sendTestnetXem",
       "pathRewrite": {
         "^/api/sendTestnetXem": ""
+      },
+      "changeOrigin": true
+    },
+    "/api/supernode": {
+      "target": "http://104.128.226.60:7890",
+      "pathRewrite": {
+        "^/api/supernode": ""
       },
       "changeOrigin": true
     }

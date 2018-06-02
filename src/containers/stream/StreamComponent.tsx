@@ -126,8 +126,6 @@ export class StreamComponent extends Component<IStreamComponentProps, IStreamCom
     this.setState({
       openPostWrite: false
     })
-    console.log(this)
-    // TODO: need to send an action to verify the post
   }
 
   /**
