@@ -46,6 +46,10 @@ import classNames from 'classnames'
 
 import reactStringReplace from 'react-string-replace'
 
+// Import core functionality
+import { SocialError } from 'core/domain/common'
+import { ApostilleVerify, ExtractPost, TransactionByHash } from 'core/nem'
+
 // - Import app icons
 import SvgRejectedPost from 'icons/SvgRejectedPost'
 import SvgVerifiedPost from 'icons/SvgVerifiedPost'
@@ -177,6 +181,15 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
        */
       openPostWrite: false,
       /**
+       * Whether post is verified from NEM apostille
+       */
+      isPostVerified: false,
+
+      /**
+       * Whether post is verified from NEM apostille
+       */
+      isPostVerifiedLoaded: false,
+      /**
        * Post menu anchor element
        */
       postMenuAnchorEl: null,
@@ -187,12 +200,18 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
       /**
        * Whether the verified tooltip is open.
        */
-      isVerifiedTooltipOpen: false
+      isVerifiedTooltipOpen: false,
+      /**
+       * Previous post component state
+       */
+      postPreviousState: undefined
     }
 
     // Binding functions to this
     this.handleReadMore = this.handleReadMore.bind(this)
     this.getOpenCommentGroup = this.getOpenCommentGroup.bind(this)
+    this.getPostVerified = this.getPostVerified.bind(this)
+    this.getPostVerifiedCallback = this.getPostVerifiedCallback.bind(this)
     this.handleVote = this.handleVote.bind(this)
     this.handleOpenShare = this.handleOpenShare.bind(this)
     this.handleCloseShare = this.handleCloseShare.bind(this)
@@ -203,6 +222,8 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
     this.handleOpenComments = this.handleOpenComments.bind(this)
     this.handleVerifyTooltipOpen = this.handleVerifyTooltipOpen.bind(this)
     this.handleVerifyTooltipClose = this.handleVerifyTooltipClose.bind(this)
+
+    this.getPostVerified()
   }
 
   /**
@@ -228,7 +249,9 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
    * @memberof StreamComponent
    */
   handleOpenPostWrite = () => {
+    const { post } = this.props
     this.setState({
+      postPreviousState: ExtractPost(post.toJS()),
       openPostWrite: true
     })
   }
@@ -241,8 +264,22 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
    */
   handleClosePostWrite = () => {
     this.setState({
-      openPostWrite: false
+      openPostWrite: false,
+      isPostVerifiedLoaded: false
     })
+
+    // trigger the update callback
+    const { post } = this.props
+    if (this.state.postPreviousState !== ExtractPost(post.toJS())) {
+      this.setState({postPreviousState: undefined})
+      const timer = setInterval(() => {
+        if (this.state.isPostVerifiedLoaded) {
+          clearInterval(timer)
+        } else {
+          this.getPostVerifiedCallback()
+        }
+      }, 15000)
+    }
   }
 
   /**
@@ -363,13 +400,51 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
   }
 
   /**
+   * Call getPostVerifiedCallback on an interval.
+   */
+  getPostVerified = () => {
+    // Load post verification using an interval
+    // Set the interval to 15 seconds, block inclusion is slow.
+    this.getPostVerifiedCallback()
+    const timer = setInterval(() => {
+      if (this.state.isPostVerifiedLoaded) {
+        clearInterval(timer)
+      } else {
+        this.getPostVerifiedCallback()
+      }
+    }, 15000)
+  }
+
+  /**
+   * Load if the post is verified using apostille
+   */
+  getPostVerifiedCallback = () => {
+    const hash = this.props.post.get('postTransactionHash', '')
+    const post = this.props.post.toJS()
+    const content = ExtractPost(post)
+    console.log(`Hash is: ${hash} and content is ${content}`)
+
+    TransactionByHash(hash)
+      .then((response: any) => {
+        if (ApostilleVerify(content, response.transaction)) {
+          this.setState({isPostVerified: true, isPostVerifiedLoaded: true})
+        } else {
+          this.setState({isPostVerified: false, isPostVerifiedLoaded: true})
+        }
+      })
+      .catch((error: any) => {
+          this.setState({isPostVerified: false, isPostVerifiedLoaded: false})
+          console.error(`nem/getTransactionByHash: Error in NEM API, hash is: ${post.postTransactionHash}.`)
+      })
+  }
+
+  /**
    * Handle read more event
    * @param  {event} evt  is the event passed by click on read more
    */
   handleReadMore (event: any) {
     this.setState({
       readMoreState: !this.state.readMoreState
-
     })
   }
 
@@ -379,10 +454,8 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
    */
   render () {
     const { post, setHomeTitle, goTo, fullName, isPostOwner, commentList, avatar, classes , translate} = this.props
-    const { postMenuAnchorEl, isPostMenuOpen } = this.state
-    const verifiedLoaded = false // TODO: fix
-    const verified = true // TODO: fix
-    const postHash = 'fe4e545983d3eaae564957936211f489b82d9d26b1d201c84a7283d5c8a46e12633e108e3a9f7fd65e2d5c7584fbdf8f821a4d4aad0ee22007dbf6f361c7da7988d3f2990d'
+    const { postMenuAnchorEl, isPostMenuOpen, isPostVerified, isPostVerifiedLoaded } = this.state
+    const postTxHash = 'TX Hash: ' + post.get('postTransactionHash', '')
     const rightIconMenu = (
       <Manager>
         <Target>
@@ -394,7 +467,7 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
             >
               <MoreVertIcon />
             </IconButton>
-            {verifiedLoaded ?
+            {isPostVerifiedLoaded ?
               <Tooltip
                 enterDelay={300}
                 id='tooltip-controlled'
@@ -403,9 +476,9 @@ export class PostComponent extends Component<IPostComponentProps, IPostComponent
                 onOpen={this.handleVerifyTooltipOpen}
                 open={this.state.isVerifiedTooltipOpen}
                 placement='bottom'
-                title={postHash}
+                title={postTxHash}
               >
-                {verified ?
+                {isPostVerified ?
                   (<Icon
                     className={classes.icon}
                     aria-label='Verified'>

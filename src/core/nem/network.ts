@@ -17,6 +17,10 @@ export const LastBlock = () =>
 export const Time = () =>
     nem.com.requests.chain.time(endpoint)
 
+// Lookup
+export const TransactionByHash = (hash: string) =>
+    nem.com.requests.transaction.byHash(endpoint, hash)
+
 // Announce
 export const SendTransaction = (
     common: object,

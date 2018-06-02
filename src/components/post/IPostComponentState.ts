@@ -1,47 +1,57 @@
 
 export interface IPostComponentState {
 
-    /**
-     * Post text
-     */
+  /**
+   * Post text
+   */
   text: string
-      /**
-       * It's true if whole the text post is visible
-       */
+  /**
+   * It's true if whole the text post is visible
+   */
   readMoreState: boolean
-      /**
-       * Handle open comment from parent component
-       */
+  /**
+   * Handle open comment from parent component
+   */
   openComments: boolean
-      /**
-       * If it's true, share dialog will be open
-       */
+  /**
+   * If it's true, share dialog will be open
+   */
   shareOpen: boolean
-      /**
-       * If it's true comment will be disabled on post
-       */
+  /**
+   * If it's true comment will be disabled on post
+   */
   disableComments: boolean
-      /**
-       * If it's true share will be disabled on post
-       */
+  /**
+   * If it's true share will be disabled on post
+   */
   disableSharing: boolean
-      /**
-       * Title of share post
-       */
+  /**
+   * Title of share post
+   */
   shareTitle: string
-      /**
-       * If it's true, post link will be visible in share post dialog
-       */
+  /**
+   * If it's true, post link will be visible in share post dialog
+   */
   openCopyLink: boolean
-      /**
-       * If it's true, post write will be open
-       */
+  /**
+   * If it's true, post write will be open
+   */
   openPostWrite: boolean
 
   /**
    * Open the comment group
    */
   openCommentGroup?: () => void
+
+  /**
+   * Whether post is verified from NEM apostille
+   */
+  isPostVerified?: boolean
+
+  /**
+   * Whether post is verified from NEM apostille
+   */
+  isPostVerifiedLoaded?: boolean
 
   /**
    * Post menu anchor element
@@ -56,4 +66,8 @@ export interface IPostComponentState {
    * Whether the verified tooltip is open.
    */
   isVerifiedTooltipOpen?: boolean
+  /**
+   * Previous post component state
+   */
+  postPreviousState?: string
 }

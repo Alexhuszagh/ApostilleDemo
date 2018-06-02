@@ -9,7 +9,7 @@ import { Post } from 'core/domain/posts'
  */
 export interface IPostService {
   addPost: (post: Post) => Promise<string>
-  updatePost: (post: Post) => Promise<void>
+  updatePost: (post: Post) => Promise<string>
   deletePost: (postId: string) => Promise<void>
   getPosts: (currentUserId: string,lastPostId: string, page: number, limit: number)
   => Promise<{posts: {[postId: string]: Post }[], newLastPostId: string}>

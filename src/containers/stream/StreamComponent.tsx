@@ -126,6 +126,8 @@ export class StreamComponent extends Component<IStreamComponentProps, IStreamCom
     this.setState({
       openPostWrite: false
     })
+    console.log(this)
+    // TODO: need to send an action to verify the post
   }
 
   /**
@@ -138,16 +140,16 @@ export class StreamComponent extends Component<IStreamComponentProps, IStreamCom
     let posts: Map<string, Map<string, any>> = this.props.posts
     let { tag } = match.params
     if (posts === undefined || !(posts.keySeq().count() > 0)) {
-      
+
       return (
-        
+
         <h1>
           'Nothing has shared.'
                 </h1>
 
 )
 } else {
-  
+
   let postBack = { divided: false, oddPostList: [], evenPostList: [] }
   let parsedPosts: ImuList<any> = ImuList()
   posts.forEach((post: Map<string, any>) => {
@@ -164,22 +166,22 @@ export class StreamComponent extends Component<IStreamComponentProps, IStreamCom
       const sortedPosts = PostAPI.sortImuObjectsDate(parsedPosts)
       if (sortedPosts.count() > 6) {
         postBack.divided = true
-        
+
       } else {
         postBack.divided = false
       }
       let index = 0
       sortedPosts.forEach((post) => {
-        
+
         let newPost: any = (
           <div key={`${post!.get('id')!}-stream-div`}>
-          
+
             {index > 1 || (!postBack.divided && index > 0) ? <div style={{ height: '16px' }}></div> : ''}
             <PostComponent key={`${post!.get('id')}-stream-div-post`} post={post! as any} />
 
           </div>
         )
-        
+
         if ((index % 2) === 1 && postBack.divided) {
           postBack.oddPostList.push(newPost as never)
         } else {

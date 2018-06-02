@@ -119,9 +119,8 @@ export const dbUpdatePost = (updatedPost: Map<string, any>, callBack: Function) 
 
     dispatch(globalActions.showTopLoading())
 
-    return postService.updatePost(updatedPost.toJS()).then(() => {
-
-      dispatch(updatePost(updatedPost))
+    return postService.updatePost(updatedPost.toJS()).then((postHash: string) => {
+      dispatch(updatePost(updatedPost.set('postTransactionHash', postHash)))
       callBack()
       dispatch(globalActions.hideTopLoading())
 

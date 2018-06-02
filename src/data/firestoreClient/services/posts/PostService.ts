@@ -48,24 +48,28 @@ export class PostService implements IPostService {
    * Update post
    */
   public updatePost: (post: Post)
-    => Promise<void> = (post) => {
-      return new Promise<void>((resolve, reject) => {
-        // TODO: this needs to set to update the apostille
-//        // Create our apostille transaction
-//        const common = GetApostilleCommon(post.ownerPrivateKey || '')
-//        const apostille = CreateApostille(common, post)
+    => Promise<string> = (post) => {
+      return new Promise<string>((resolve, reject) => {
+        // Create our apostille transaction
+        const common = GetApostilleCommon(post.ownerPrivateKey || '')
+        const apostille = CreateApostille(common, post)
+        SendTransaction(common, apostille)
+          .then((response: any) => {
+            // Update the hash and then resolve any differences.
+            post.postTransactionHash = response.transactionHash.data
+            const batch = db.batch()
+            const postRef = db.doc(`posts/${post.id}`)
 
-        // Post out apostille transaction
-        // TODO: need to update the apostille....
-        const batch = db.batch()
-        const postRef = db.doc(`posts/${post.id}`)
-
-        batch.update(postRef, { ...post })
-        batch.commit().then(() => {
-          resolve()
-        })
+            batch.update(postRef, { ...post })
+            batch.commit().then(() => {
+              resolve(post.postTransactionHash)
+            })
+              .catch((error: any) => {
+                reject(new SocialError(error.code, error.message))
+              })
+          })
           .catch((error: any) => {
-            reject(new SocialError(error.code, error.message))
+            reject(new SocialError('nem/addPost', 'Error in NEM API.'))
           })
       })
     }
